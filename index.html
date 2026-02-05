@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Philanthropy Roundtable Bingo</title>
+    <title> Roundtable Bingo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         body { font-family: 'Arial', sans-serif; text-align: center; background-color: #f0f0f0; padding: 20px; }
@@ -14,71 +14,71 @@
         #login-screen { display: block; margin-top: 50px; }
         input[type="text"] { padding: 10px; font-size: 16px; width: 80%; max-width: 300px; border-radius: 5px; border: 1px solid #ccc; }
         
-        /* BINGO BOARD - FIXED CSS */
+        /* BINGO BOARD LAYOUT */
         #game-screen { display: none; }
         .bingo-card {
             display: grid;
-            grid-template-columns: repeat(5, 1fr); /* Force 5 equal columns */
+            grid-template-columns: repeat(5, 1fr);
             gap: 5px;
-            
-            /* UPDATED WIDTH SETTINGS */
             width: 95%; 
-            max-width: 800px; /* Gave it more room to breathe */
+            max-width: 800px;
             margin: 20px auto;
-            
             background: #222;
             padding: 8px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2); /* Added nice shadow for depth */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
         .square {
             background: white;
-            aspect-ratio: 1/1; /* Keeps them square */
+            aspect-ratio: 1/1;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 4px;
-            
-            /* DYNAMIC FONT SIZE MAGIC */
-            /* This shrinks text on phones and grows it on desktop automatically */
+            /* Dynamic font sizing */
             font-size: clamp(9px, 1.5vw, 15px); 
-            
             font-weight: bold;
             cursor: pointer;
             user-select: none;
             text-align: center;
             line-height: 1.2;
-            
-            /* THE CRITICAL FIXES FOR ALIGNMENT */
-            min-width: 0; /* Prevents long text from blowing out the grid */
-            word-wrap: break-word; /* Forces text to wrap */
-            overflow: hidden; /* Hides anything that still refuses to fit */
+            /* Text wrapping fixes */
+            min-width: 0;
+            word-wrap: break-word;
+            overflow: hidden;
             border-radius: 4px;
         }
         
         .square.active { background-color: #ffcc00; color: #333; }
         .free-space { background-color: #eee; color: #555; }
         
-        /* BUTTONS */
+        /* MAIN BUTTONS */
         .btn {
             margin-top: 20px; padding: 12px 24px; font-size: 16px; 
             cursor: pointer; background-color: #003366; color: white; 
             border: none; border-radius: 5px;
         }
         
-        /* WIN BANNER */
+        /* WIN BANNER - UPDATED */
         #win-banner {
             display: none;
-            background-color: #28a745;
+            background-color: #003366; /* Navy Blue */
             color: white;
-            padding: 20px;
+            padding: 30px 20px;
             position: fixed;
-            top: 20%; left: 5%; right: 5%;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            top: 20%; 
+            /* Center horizontally and limit width */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 450px; /* Much narrower */
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
             z-index: 100;
+            text-align: center;
         }
+        #win-banner h2 { margin-top: 0; font-size: 28px; }
     </style>
 </head>
 <body>
@@ -106,10 +106,10 @@
 
     <div id="win-banner">
         <h2>🎉 BINGO! 🎉</h2>
-        <p>Click below to submit your winning board!</p>
-        <button class="btn" style="background: white; color: #28a745; font-weight:bold;" id="claim-btn">Claim Victory</button>
+        <p style="color: #ddd; font-size: 16px;">Click below to submit your winning board!</p>
+        <button class="btn" style="background: white; color: #003366; font-weight:bold; padding: 15px 35px; font-size: 18px; margin-top: 10px;" id="claim-btn">Claim Victory</button>
         <br><br>
-        <button id="close-win-btn" style="background:none; border:none; color:white; text-decoration:underline; cursor:pointer;">Close</button>
+        <button id="close-win-btn" style="background:none; border:none; color:#ccc; text-decoration:underline; cursor:pointer; margin-top: 10px;">Close</button>
     </div>
 
     <script>
@@ -157,8 +157,6 @@
 
         // --- BINDING EVENTS ---
         document.addEventListener('DOMContentLoaded', () => {
-            // I removed the "System Online" alert since we know the script loads now!
-
             // Bind Login Button
             const loginForm = document.getElementById('login-form');
             if(loginForm) {
