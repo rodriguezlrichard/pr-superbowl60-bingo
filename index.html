@@ -7,7 +7,6 @@
         body { font-family: 'Arial', sans-serif; text-align: center; background-color: #f0f0f0; padding: 20px; }
         
         /* LOGO STYLING */
-        /* Will hide automatically if 'logo.png' is missing */
         .logo { max-width: 250px; height: auto; margin-bottom: 10px; }
         
         h1 { color: #003366; margin: 5px 0; font-size: 24px; }
@@ -44,7 +43,6 @@
             line-height: 1.1;
             overflow-wrap: break-word; 
         }
-        /* Make text bigger on larger screens */
         @media (min-width: 600px) { .square { font-size: 13px; padding: 8px; } }
         
         .square.active { background-color: #ffcc00; color: #333; }
@@ -56,7 +54,6 @@
             cursor: pointer; background-color: #003366; color: white; 
             border: none; border-radius: 5px;
         }
-        .btn:disabled { background-color: #ccc; cursor: not-allowed; }
         
         /* WIN BANNER */
         #win-banner {
@@ -84,52 +81,3 @@
             <br><br>
             <button class="btn" type="submit">Start Game</button>
         </form>
-    </div>
-
-    <div id="game-screen">
-        <h1>Welcome, <span id="display-name"></span>!</h1>
-        <p>Tap squares to mark them.</p>
-        
-        <div class="bingo-card" id="card"></div>
-        
-        <button class="btn" onclick="checkBingoManually()">I Have Bingo!</button>
-        <br><br>
-        <small style="color:#999; cursor:pointer;" onclick="resetGame()">[Reset/New Player]</small>
-    </div>
-
-    <div id="win-banner">
-        <h2>🎉 BINGO! 🎉</h2>
-        <p>Click below to submit your winning board!</p>
-        <button class="btn" style="background: white; color: #28a745; font-weight:bold;" onclick="submitToForm()">Claim Victory</button>
-        <br><br>
-        <button onclick="document.getElementById('win-banner').style.display='none'" style="background:none; border:none; color:white; text-decoration:underline; cursor:pointer;">Close</button>
-    </div>
-
-    <script>
-        // --- DATA ---
-        const options = [
-            "Coin Toss: Heads", 
-            "Coin Toss: Tails", 
-            "National Anthem over 2 mins",
-            "Coach throws headset", 
-            "Review/Challenge Flag", 
-            "Missed Field Goal",
-            "Interception", 
-            "Sack", 
-            "Touchdown Dance Celebration", 
-            "Fan with Face Paint Shown",
-            "Cardi B is Mentioned or Shown", 
-            "Anne Michael Maye Mentioned or Shown", 
-            "Commercial: FanDuel",
-            "Commercial: Coors", 
-            "Commercial: Tax Software", 
-            "Movie Trailer",
-            "Sydney Sweeney Cameo in Ad", 
-            "Halftime: Costume Change", 
-            "Halftime: Guest Star",
-            "Announcers mention 'Patriots Dynasty'", 
-            "Failed Challenge", 
-            "Fumble",
-            "Drake Maye Passing Touchdown",
-            "Sam Darnold Passing Touchdown",
-            "Field Goal over 50 yards",
