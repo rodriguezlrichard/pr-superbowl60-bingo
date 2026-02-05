@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Super Bowl LX Office Bingo</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; text-align: center; background-color: #f0f0f0; padding: 20px; }
+        h1 { color: #003366; } /* Adjust colors for Seahawks/Patriots if desired */
+        .bingo-card {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            max-width: 600px;
+            margin: 0 auto;
+            background: #333;
+            padding: 5px;
+            border-radius: 10px;
+        }
+        .square {
+            background: white;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1/1;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            text-align: center;
+        }
+        .square.active { background-color: #ffcc00; color: #333; } /* Highlight color */
+        .free-space { background-color: #eee; color: #555; }
+        button { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h1>🏈 Philanthropy Roundtable Super Bowl LX Bingo 🏈</h1>
+    <p>Tap a square to mark it!</p>
+    
+    <div class="bingo-card" id="card"></div>
+    
+    <button onclick="location.reload()">Get New Board</button>
+
+    <script>
+        // --- YOUR CUSTOM ANSWERS GO HERE ---
+        // Add as many as you want (at least 24). The code will pick 24 random ones.
+        const options = [
+            "Coin Toss: Heads", "Coin Toss: Tails", "National Anthem over 2 mins",
+            "Coach throws headset", "Review/Challenge Flag", "Missed Field Goal",
+            "Interception", "Sack", "Touchdown Celebration", "Fan with Face Paint",
+            "Cardi B Mention", "Anne Michael Maye Mention", "Commercial: FanDuel",
+            "Commercial: Beer", "Commercial: Tax Software", "Movie Trailer",
+            "Sabrina Carpenter Cameo in Ad", "Halftime: Costume Change", "Halftime: Guest Star",
+            "Announcers mention 'Dynasty'", "Failed Challenge", "Fumble",
+            "Score is tied", "Field Goal over 50 yards", "Player drinking water",
+            "Shot of the moon", "Owner in luxury box", "Mascot shown",
+            "Safety", "2-Point Conversion", "Holding Penalty"
+			"Commercial: AI", "Commercial: Ben Affleck does a Boston Accent", "Shane Gillis in a Commercial"
+        ];
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function generateCard() {
+            const card = document.getElementById('card');
+            const shuffledOptions = shuffle([...options]).slice(0, 24); // Pick 24 random items
+            
+            // Insert Free Space in the middle (index 12)
+            shuffledOptions.splice(12, 0, "FREE SPACE");
+
+            card.innerHTML = ""; // Clear existing
+
+            shuffledOptions.forEach((text, index) => {
+                const div = document.createElement('div');
+                div.className = 'square';
+                div.innerText = text;
+                
+                if (index === 12) {
+                    div.classList.add('free-space', 'active'); // Auto-mark free space
+                } else {
+                    div.onclick = () => div.classList.toggle('active');
+                }
+                card.appendChild(div);
+            });
+        }
+
+        generateCard();
+    </script>
+
+</body>
+</html>
