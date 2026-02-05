@@ -77,11 +77,13 @@
     <img src="logo.png" alt="Philanthropy Roundtable" class="logo" onerror="this.style.display='none'">
 
     <div id="login-screen">
-        <h1>Super Bowl LX Bingo</h1>
-        <p>Enter your name to generate your official board.</p>
-        <input type="text" id="username" placeholder="First and Last Name">
-        <br><br>
-        <button class="btn" onclick="startGame()">Start Game</button>
+        <form onsubmit="event.preventDefault(); startGame();">
+            <h1>Super Bowl LX Bingo</h1>
+            <p>Enter your name to generate your official board.</p>
+            <input type="text" id="username" placeholder="First and Last Name" autocomplete="off">
+            <br><br>
+            <button class="btn" type="submit">Start Game</button>
+        </form>
     </div>
 
     <div id="game-screen">
@@ -130,54 +132,4 @@
             "Fumble",
             "Drake Maye Passing Touchdown",
             "Sam Darnold Passing Touchdown",
-            "Field Goal over 50 yards", 
-            "Pass Interference Penalty",
-            "False Start Penalty", 
-            "Owner shown in luxury box", 
-            "Mascot shown",
-            "Safety", 
-            "2-Point Conversion", 
-            "Holding Penalty",
-            "Commercial: Some AI tool is Advertised", 
-            "Commercial: Ben Affleck does a Boston Accent", 
-            "Shane Gillis in a Commercial",
-            "Roger Goodell gets Booed"
-        ];
-
-        // --- STATE MANAGEMENT ---
-        let gameState = {
-            name: "",
-            board: [],
-            marked: [] 
-        };
-
-        // --- INIT ---
-        window.onload = function() {
-            // Check if user already has a saved game
-            const savedState = localStorage.getItem('pr_bingo_state_2026');
-            if (savedState) {
-                gameState = JSON.parse(savedState);
-                showGame();
-            }
-        };
-
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
-        function startGame() {
-            const nameInput = document.getElementById('username').value.trim();
-            if (!nameInput) { alert("Please enter your name."); return; }
-
-            // Create new State
-            gameState.name = nameInput;
-            gameState.board = shuffle([...options]).slice(0, 24);
-            gameState.board.splice(12, 0, "FREE SPACE"); // Insert Free Space
-            gameState.marked = new Array(25).fill(false);
-            gameState.marked[12] = true; // Mark free space
-
-            saveState();
+            "Field Goal over 50 yards",
