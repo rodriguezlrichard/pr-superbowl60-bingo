@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title> Roundtable Bingo</title>
+    <title>Philanthropy Roundtable Bingo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         body { font-family: 'Arial', sans-serif; text-align: center; background-color: #f0f0f0; padding: 20px; }
@@ -60,25 +60,25 @@
             border: none; border-radius: 5px;
         }
         
-        /* WIN BANNER - UPDATED */
+        /* WIN BANNER */
         #win-banner {
             display: none;
-            background-color: #003366; /* Navy Blue */
+            background-color: #003366; 
             color: white;
-            padding: 30px 20px;
+            padding: 25px 20px;
             position: fixed;
-            top: 20%; 
-            /* Center horizontally and limit width */
+            /* Move it to the bottom so it doesn't cover the board for the screenshot */
+            bottom: 20px; 
             left: 50%;
             transform: translateX(-50%);
             width: 90%;
-            max-width: 450px; /* Much narrower */
+            max-width: 450px;
             border-radius: 15px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.5);
             z-index: 100;
             text-align: center;
         }
-        #win-banner h2 { margin-top: 0; font-size: 28px; }
+        #win-banner h2 { margin-top: 0; font-size: 28px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -106,10 +106,13 @@
 
     <div id="win-banner">
         <h2>🎉 BINGO! 🎉</h2>
-        <p style="color: #ddd; font-size: 16px;">Click below to submit your winning board to Rich!</p>
-        <button class="btn" style="background: white; color: #003366; font-weight:bold; padding: 15px 35px; font-size: 18px; margin-top: 10px;" id="claim-btn">Claim Victory</button>
+        <p style="color: #ddd; font-size: 16px; margin-bottom: 20px;">
+            1. Take a screenshot of your board.<br>
+            2. Click below to upload it!
+        </p>
+        <button class="btn" style="background: white; color: #003366; font-weight:bold; padding: 15px 35px; font-size: 18px; margin-top: 0;" id="claim-btn">Submit Proof</button>
         <br><br>
-        <button id="close-win-btn" style="background:none; border:none; color:#ccc; text-decoration:underline; cursor:pointer; margin-top: 10px;">Close</button>
+        <button id="close-win-btn" style="background:none; border:none; color:#ccc; text-decoration:underline; cursor:pointer;">Close</button>
     </div>
 
     <script>
@@ -129,7 +132,7 @@
             "Emotional Big Pharma Ad",
             "Cardi B is Mentioned or Shown",
             "Anne Michael Maye Mentioned or Shown",
-            "FanDuel Commerical",
+            "FanDuel Commercial",
             "Coors Commercial",
             "Turbotax Commercial",
             "Movie Trailer",
@@ -154,19 +157,16 @@
             "Shane Gillis in a Commercial",
             "Roger Goodell gets Booed",
             "Superbowl Rematch Brought Up",
-            "Bad Bunny comparsion to previous Halftime shows",
+            "Bad Bunny comparison to previous Halftime shows",
             "Upset/In Shock Fan is shown",
             "Marshawn Lynch Shocked Face is Referenced or Shown",
             "Chris Collinsworth mentions Patrick Mahomes",
-            "Olympics are Mentioned by Announcers",
-            
+            "Olympics are Mentioned by Announcers"
         ];
 
         let gameState = { name: "", board: [], marked: [] };
 
-        // --- BINDING EVENTS ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Bind Login Button
             const loginForm = document.getElementById('login-form');
             if(loginForm) {
                 loginForm.addEventListener('submit', function(e) {
@@ -174,22 +174,13 @@
                     startGame();
                 });
             }
-
-            // Bind Bingo Button
             document.getElementById('bingo-btn').addEventListener('click', checkBingoManually);
-            
-            // Bind Reset Button
             document.getElementById('reset-btn').addEventListener('click', resetGame);
-
-            // Bind Claim Button
             document.getElementById('claim-btn').addEventListener('click', submitToForm);
-
-            // Bind Close Button
             document.getElementById('close-win-btn').addEventListener('click', function() {
                 document.getElementById('win-banner').style.display='none';
             });
 
-            // Check for saved game
             const savedState = localStorage.getItem('pr_bingo_state_2026');
             if (savedState) {
                 try {
@@ -213,13 +204,11 @@
         function startGame() {
             const nameInput = document.getElementById('username').value.trim();
             if (!nameInput) { alert("Please enter your name."); return; }
-
             gameState.name = nameInput;
             gameState.board = shuffle([...options]).slice(0, 24);
             gameState.board.splice(12, 0, "FREE SPACE"); 
             gameState.marked = new Array(25).fill(false);
             gameState.marked[12] = true; 
-
             saveState();
             showGame();
         }
@@ -268,6 +257,7 @@
         }
 
         function submitToForm() {
+            // Updated to open the Form in a new tab where they can upload their file
             const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLScR8wTiALevIGCqyOovQCoYVC5Hi309DoC5sg3F3nitNMVZUw/viewform?usp=pp_url&entry.828186722=NAME_HOLDER&entry.1629981459=SQUARES_HOLDER";
             const winningSquares = gameState.board.filter((_, i) => gameState.marked[i]).join(", ");
             const safeName = encodeURIComponent(gameState.name);
@@ -278,6 +268,3 @@
     </script>
 </body>
 </html>
-
-
-
