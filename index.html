@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         body { font-family: 'Arial', sans-serif; text-align: center; background-color: #f0f0f0; padding: 20px; }
-        
         .logo { max-width: 250px; height: auto; margin-bottom: 10px; }
-        
         h1 { color: #003366; margin: 5px 0; font-size: 24px; }
         p { margin-top: 0; color: #555; }
         
@@ -69,7 +67,7 @@
     <img src="logo.png" alt="Philanthropy Roundtable" class="logo" onerror="this.style.display='none'">
 
     <div id="login-screen">
-        <form onsubmit="event.preventDefault(); startGame();">
+        <form id="login-form">
             <h1>Super Bowl LX Bingo</h1>
             <p>Enter your name to generate your official board.</p>
             <input type="text" id="username" placeholder="First and Last Name" autocomplete="off">
@@ -82,22 +80,21 @@
         <h1>Welcome, <span id="display-name"></span>!</h1>
         <p>Tap squares to mark them.</p>
         <div class="bingo-card" id="card"></div>
-        <button class="btn" onclick="checkBingoManually()">I Have Bingo!</button>
+        <button class="btn" id="bingo-btn">I Have Bingo!</button>
         <br><br>
-        <small style="color:#999; cursor:pointer;" onclick="resetGame()">[Reset/New Player]</small>
+        <small style="color:#999; cursor:pointer;" id="reset-btn">[Reset/New Player]</small>
     </div>
 
     <div id="win-banner">
         <h2>🎉 BINGO! 🎉</h2>
         <p>Click below to submit your winning board!</p>
-        <button class="btn" style="background: white; color: #28a745; font-weight:bold;" onclick="submitToForm()">Claim Victory</button>
+        <button class="btn" style="background: white; color: #28a745; font-weight:bold;" id="claim-btn">Claim Victory</button>
         <br><br>
-        <button onclick="document.getElementById('win-banner').style.display='none'" style="background:none; border:none; color:white; text-decoration:underline; cursor:pointer;">Close</button>
+        <button id="close-win-btn" style="background:none; border:none; color:white; text-decoration:underline; cursor:pointer;">Close</button>
     </div>
 
     <script>
-        // --- SANITIZED DATA ---
-        // I have manually cleaned this list to remove any hidden characters.
+        // --- DATA SECTION ---
         const options = [
             "Coin Toss: Heads",
             "Coin Toss: Tails",
@@ -137,25 +134,47 @@
             "Roger Goodell gets Booed"
         ];
 
-        let gameState = {
-            name: "",
-            board: [],
-            marked: [] 
-        };
+        let gameState = { name: "", board: [], marked: [] };
 
-        window.onload = function() {
-            console.log("Bingo System: Loaded");
+        // --- BINDING EVENTS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            alert("System Online: Code Loaded Successfully"); // DIAGNOSTIC POPUP
+
+            // Bind Login Button
+            const loginForm = document.getElementById('login-form');
+            if(loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    startGame();
+                });
+            }
+
+            // Bind Bingo Button
+            document.getElementById('bingo-btn').addEventListener('click', checkBingoManually);
+            
+            // Bind Reset Button
+            document.getElementById('reset-btn').addEventListener('click', resetGame);
+
+            // Bind Claim Button
+            document.getElementById('claim-btn').addEventListener('click', submitToForm);
+
+            // Bind Close Button
+            document.getElementById('close-win-btn').addEventListener('click', function() {
+                document.getElementById('win-banner').style.display='none';
+            });
+
+            // Check for saved game
             const savedState = localStorage.getItem('pr_bingo_state_2026');
             if (savedState) {
                 try {
                     gameState = JSON.parse(savedState);
                     showGame();
                 } catch(e) {
-                    console.log("Error loading state", e);
+                    console.error(e);
                     localStorage.removeItem('pr_bingo_state_2026');
                 }
             }
-        };
+        });
 
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -166,7 +185,6 @@
         }
 
         function startGame() {
-            console.log("Start Game Clicked");
             const nameInput = document.getElementById('username').value.trim();
             if (!nameInput) { alert("Please enter your name."); return; }
 
@@ -209,11 +227,7 @@
         }
 
         function saveState() {
-            try {
-                localStorage.setItem('pr_bingo_state_2026', JSON.stringify(gameState));
-            } catch (e) {
-                console.log("Could not save state");
-            }
+            localStorage.setItem('pr_bingo_state_2026', JSON.stringify(gameState));
         }
 
         function resetGame() {
