@@ -1,67 +1,110 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Super Bowl LX Office Bingo</title>
+    <title>Philanthropy Roundtable Bingo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         body { font-family: 'Arial', sans-serif; text-align: center; background-color: #f0f0f0; padding: 20px; }
         
-        /* Navy Blue for branding */
-        h1 { color: #003366; margin-bottom: 5px; } 
+        /* LOGO STYLING */
+        /* Will hide automatically if 'logo.png' is missing */
+        .logo { max-width: 250px; height: auto; margin-bottom: 10px; }
+        
+        h1 { color: #003366; margin: 5px 0; font-size: 24px; }
         p { margin-top: 0; color: #555; }
         
+        /* LOGIN SCREEN */
+        #login-screen { display: block; margin-top: 50px; }
+        input[type="text"] { padding: 10px; font-size: 16px; width: 80%; max-width: 300px; border-radius: 5px; border: 1px solid #ccc; }
+        
+        /* BINGO BOARD */
+        #game-screen { display: none; }
         .bingo-card {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 5px;
+            gap: 4px;
             max-width: 600px;
-            margin: 20px auto;
-            background: #333; /* Dark border */
+            margin: 10px auto;
+            background: #333;
             padding: 5px;
             border-radius: 10px;
         }
         .square {
             background: white;
-            padding: 5px;
+            padding: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
             aspect-ratio: 1/1;
-            font-size: 12px; 
+            font-size: 10px; 
             font-weight: bold;
             cursor: pointer;
             user-select: none;
             text-align: center;
-            line-height: 1.2;
+            line-height: 1.1;
             overflow-wrap: break-word; 
         }
-        .square:hover { background-color: #f9f9f9; }
-        .square.active { background-color: #ffcc00; color: #333; } /* Highlight color */
+        /* Make text bigger on larger screens */
+        @media (min-width: 600px) { .square { font-size: 13px; padding: 8px; } }
+        
+        .square.active { background-color: #ffcc00; color: #333; }
         .free-space { background-color: #eee; color: #555; }
         
-        button { 
-            margin-top: 20px; 
-            padding: 12px 24px; 
-            font-size: 16px; 
-            cursor: pointer; 
-            background-color: #003366; 
-            color: white; 
-            border: none; 
-            border-radius: 5px; 
+        /* BUTTONS */
+        .btn {
+            margin-top: 20px; padding: 12px 24px; font-size: 16px; 
+            cursor: pointer; background-color: #003366; color: white; 
+            border: none; border-radius: 5px;
         }
-        button:hover { background-color: #002244; }
+        .btn:disabled { background-color: #ccc; cursor: not-allowed; }
+        
+        /* WIN BANNER */
+        #win-banner {
+            display: none;
+            background-color: #28a745;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            top: 20%; left: 5%; right: 5%;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            z-index: 100;
+        }
     </style>
 </head>
 <body>
 
-    <h1>🏈 Super Bowl LX Bingo 🏈</h1>
-    <p>Tap a square to mark it!</p>
-    
-    <div class="bingo-card" id="card"></div>
-    
-    <button onclick="generateCard()">Get New Board</button>
+    <img src="logo.png" alt="Philanthropy Roundtable" class="logo" onerror="this.style.display='none'">
+
+    <div id="login-screen">
+        <h1>Super Bowl LX Bingo</h1>
+        <p>Enter your name to generate your official board.</p>
+        <input type="text" id="username" placeholder="First and Last Name">
+        <br><br>
+        <button class="btn" onclick="startGame()">Start Game</button>
+    </div>
+
+    <div id="game-screen">
+        <h1>Welcome, <span id="display-name"></span>!</h1>
+        <p>Tap squares to mark them.</p>
+        
+        <div class="bingo-card" id="card"></div>
+        
+        <button class="btn" onclick="checkBingoManually()">I Have Bingo!</button>
+        <br><br>
+        <small style="color:#999; cursor:pointer;" onclick="resetGame()">[Reset/New Player]</small>
+    </div>
+
+    <div id="win-banner">
+        <h2>🎉 BINGO! 🎉</h2>
+        <p>Click below to submit your winning board!</p>
+        <button class="btn" style="background: white; color: #28a745; font-weight:bold;" onclick="submitToForm()">Claim Victory</button>
+        <br><br>
+        <button onclick="document.getElementById('win-banner').style.display='none'" style="background:none; border:none; color:white; text-decoration:underline; cursor:pointer;">Close</button>
+    </div>
 
     <script>
-        // --- MY CUSTOM ANSWERS ---
+        // --- DATA ---
         const options = [
             "Coin Toss: Heads", 
             "Coin Toss: Tails", 
@@ -71,35 +114,53 @@
             "Missed Field Goal",
             "Interception", 
             "Sack", 
-            "Touchdown Celebration", 
-            "Fan with Face Paint",
-            "Cardi B Mention", 
-            "Anne Michael Maye Mention", 
+            "Touchdown Dance Celebration", 
+            "Fan with Face Paint Shown",
+            "Cardi B is Mentioned or Shown", 
+            "Anne Michael Maye Mentioned or Shown", 
             "Commercial: FanDuel",
-            "Commercial: Beer", 
+            "Commercial: Coors", 
             "Commercial: Tax Software", 
             "Movie Trailer",
-            "Sabrina Carpenter Cameo in Ad", 
+            "Sydney Sweeney Cameo in Ad", 
             "Halftime: Costume Change", 
             "Halftime: Guest Star",
-            "Announcers mention 'Dynasty'", 
+            "Announcers mention 'Patriots Dynasty'", 
             "Failed Challenge", 
             "Fumble",
-            "Score is tied", 
+            "Drake Maye Passing Touchdown",
+            "Sam Darnold Passing Touchdown",
             "Field Goal over 50 yards", 
-            "Player drinking water",
-            "Shot of the moon", 
-            "Owner in luxury box", 
+            "Pass Interference Penalty",
+            "False Start Penalty", 
+            "Owner shown in luxury box", 
             "Mascot shown",
             "Safety", 
             "2-Point Conversion", 
             "Holding Penalty",
-            "Commercial: AI", 
+            "Commercial: Some AI tool is Advertised", 
             "Commercial: Ben Affleck does a Boston Accent", 
-            "Shane Gillis in a Commercial"
+            "Shane Gillis in a Commercial",
+            "Roger Goodell gets Booed"
         ];
 
-        // --- THE GAME ENGINE ---
+        // --- STATE MANAGEMENT ---
+        let gameState = {
+            name: "",
+            board: [],
+            marked: [] 
+        };
+
+        // --- INIT ---
+        window.onload = function() {
+            // Check if user already has a saved game
+            const savedState = localStorage.getItem('pr_bingo_state_2026');
+            if (savedState) {
+                gameState = JSON.parse(savedState);
+                showGame();
+            }
+        };
+
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -108,36 +169,15 @@
             return array;
         }
 
-        function generateCard() {
-            const card = document.getElementById('card');
-            card.innerHTML = ""; // Clear existing squares
-            
-            // 1. Shuffle and pick 24 random items
-            // clone  array with [...options] so the original list doesnt get f'd up
-            const shuffledOptions = shuffle([...options]).slice(0, 24); 
-            
-            // 2. Insert Free Space in the middle (index 12)
-            shuffledOptions.splice(12, 0, "FREE SPACE");
+        function startGame() {
+            const nameInput = document.getElementById('username').value.trim();
+            if (!nameInput) { alert("Please enter your name."); return; }
 
-            // 3. Build the HTML squares
-            shuffledOptions.forEach((text, index) => {
-                const div = document.createElement('div');
-                div.className = 'square';
-                div.innerText = text;
-                
-                if (index === 12) {
-                    div.classList.add('free-space', 'active'); // Auto-mark free space
-                } else {
-                    div.onclick = () => div.classList.toggle('active');
-                }
-                card.appendChild(div);
-            });
-        }
+            // Create new State
+            gameState.name = nameInput;
+            gameState.board = shuffle([...options]).slice(0, 24);
+            gameState.board.splice(12, 0, "FREE SPACE"); // Insert Free Space
+            gameState.marked = new Array(25).fill(false);
+            gameState.marked[12] = true; // Mark free space
 
-        // Run this immediately when page loads
-        generateCard();
-    </script>
-
-</body>
-</html>
-
+            saveState();
