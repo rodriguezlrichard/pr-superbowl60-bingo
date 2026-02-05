@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Philanthropy Roundtable Bingo</title>
+    <title> Roundtable Bingo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         body { font-family: 'Arial', sans-serif; text-align: center; background-color: #f0f0f0; padding: 20px; }
@@ -13,6 +13,19 @@
         /* LOGIN SCREEN */
         #login-screen { display: block; margin-top: 50px; }
         input[type="text"] { padding: 10px; font-size: 16px; width: 80%; max-width: 300px; border-radius: 5px; border: 1px solid #ccc; }
+        
+        /* PRIZE TEXT ON LOGIN SCREEN */
+        .prize-alert {
+            color: #003366;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e6f0ff;
+            display: inline-block;
+            border-radius: 8px;
+            border: 1px solid #b3d1ff;
+        }
         
         /* BINGO BOARD LAYOUT */
         #game-screen { display: none; }
@@ -43,7 +56,6 @@
             user-select: none;
             text-align: center;
             line-height: 1.2;
-            /* Text wrapping fixes */
             min-width: 0;
             word-wrap: break-word;
             overflow: hidden;
@@ -60,21 +72,21 @@
             border: none; border-radius: 5px;
         }
         
-        /* POPUP BACKDROP (Dims the background) */
+        /* MODAL OVERLAY */
         #modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); /* Dark semi-transparent background */
+            background: rgba(0,0,0,0.7); 
             z-index: 99;
         }
 
-        /* WIN BANNER (Centered Modal) */
+        /* WIN BANNER */
         #win-banner {
             display: none;
             position: fixed;
             top: 50%; left: 50%;
-            transform: translate(-50%, -50%); /* Perfectly centered */
+            transform: translate(-50%, -50%);
             width: 90%;
             max-width: 400px;
             background-color: #003366; 
@@ -97,7 +109,13 @@
             <h1>Super Bowl LX Bingo</h1>
             <p>Enter your name to generate your official board.</p>
             <input type="text" id="username" placeholder="First and Last Name" autocomplete="off">
-            <br><br>
+            <br>
+            
+            <div class="prize-alert">
+                🏆 The first 2 winners get<br>Jaapi Store Credit to select a gift from the swag store!
+            </div>
+            
+            <br>
             <button class="btn" type="submit">Start Game</button>
         </form>
     </div>
@@ -116,8 +134,7 @@
     <div id="win-banner">
         <h2>🎉 BINGO! 🎉</h2>
         <p style="color: #ddd; font-size: 16px; margin-bottom: 25px; line-height: 1.4;">
-            Click below to officially submit your winning board to Richard!<br><br>
-            <span style="font-size:12px; color:#aaa;">(You can take a screenshot for your own records)</span>
+            Click below to officially timestamp your victory.
         </p>
         <button class="btn" style="background: white; color: #003366; font-weight:bold; padding: 15px 35px; font-size: 18px; margin-top: 0;" id="claim-btn">Submit Victory</button>
         <br><br>
@@ -153,8 +170,6 @@
             "Fumble",
             "Drake Maye Passing Touchdown",
             "Sam Darnold Passing Touchdown",
-            "Jaxon Smith-Njigba Touchdown",
-            "Rhamondre Stevenson Toughdown",
             "Field Goal over 50 yards",
             "Pass Interference Penalty",
             "False Start Penalty",
@@ -172,7 +187,9 @@
             "Upset/In Shock Fan is shown",
             "Marshawn Lynch Shocked Face is Referenced or Shown",
             "Chris Collinsworth mentions Patrick Mahomes",
-            "Olympics are Mentioned by Announcers"
+            "Olympics are Mentioned by Announcers",
+            "Chain Gang Measurement",
+            "Timeout called due to confusion"
         ];
 
         let gameState = { name: "", board: [], marked: [] };
@@ -272,12 +289,18 @@
         }
 
         function submitToForm() {
-            // Note: This link is the same as before. 
-            // AS LONG AS you deleted the 'File Upload' question from the Google Form, this will work without login!
             const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLScR8wTiALevIGCqyOovQCoYVC5Hi309DoC5sg3F3nitNMVZUw/viewform?usp=pp_url&entry.828186722=NAME_HOLDER&entry.1629981459=SQUARES_HOLDER";
+            
+            // 1. Get Winning Squares
             const winningSquares = gameState.board.filter((_, i) => gameState.marked[i]).join(", ");
+            
+            // 2. Add Timestamp to the squares list for Tie-Breaking
+            const timestamp = new Date().toLocaleTimeString();
+            const finalSquaresData = `[WIN TIME: ${timestamp}] - ${winningSquares}`;
+
             const safeName = encodeURIComponent(gameState.name);
-            const safeSquares = encodeURIComponent(winningSquares);
+            const safeSquares = encodeURIComponent(finalSquaresData);
+
             const finalUrl = formUrl.replace("NAME_HOLDER", safeName).replace("SQUARES_HOLDER", safeSquares);
             window.open(finalUrl, '_blank');
         }
