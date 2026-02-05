@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title> Roundtable Bingo</title>
+    <title>Philanthropy Roundtable Bingo</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏈</text></svg>">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         body { font-family: 'Arial', sans-serif; text-align: center; background-color: #f0f0f0; padding: 20px; }
         
+        /* LOGO: Will hide automatically if you don't upload 'logo.png' */
         .logo { max-width: 250px; height: auto; margin-bottom: 10px; }
+        
         h1 { color: #003366; margin: 5px 0; font-size: 24px; }
         p { margin-top: 0; color: #555; }
         
@@ -14,7 +19,7 @@
         #login-screen { display: block; margin-top: 50px; }
         input[type="text"] { padding: 10px; font-size: 16px; width: 80%; max-width: 300px; border-radius: 5px; border: 1px solid #ccc; }
         
-        /* PRIZE TEXT ON LOGIN SCREEN */
+        /* PRIZE TEXT */
         .prize-alert {
             color: #003366;
             font-weight: bold;
@@ -25,6 +30,21 @@
             display: inline-block;
             border-radius: 8px;
             border: 1px solid #b3d1ff;
+        }
+
+        /* BROWSER WARNING TEXT */
+        .browser-warning {
+            font-size: 13px; 
+            color: #666; 
+            margin-top: 25px; 
+            max-width: 320px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            line-height: 1.4;
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px dashed #ccc;
         }
         
         /* BINGO BOARD LAYOUT */
@@ -49,7 +69,6 @@
             align-items: center;
             justify-content: center;
             padding: 4px;
-            /* Dynamic font sizing */
             font-size: clamp(9px, 1.5vw, 15px); 
             font-weight: bold;
             cursor: pointer;
@@ -112,11 +131,16 @@
             <br>
             
             <div class="prize-alert">
-                🏆 The first 2 winners get<br>Jaapi Store Credit to select a gift from the swag store!
+                🏆 The first 2 winners get<br>Jaapi Store Credit!
             </div>
             
             <br>
             <button class="btn" type="submit">Start Game</button>
+
+            <div class="browser-warning">
+                ⚠️ <strong>Playing in Slack or Teams?</strong><br>
+                Tap the <strong>•••</strong> menu and choose <em>"Open in Chrome/Safari"</em> so you don't lose your board if the app refreshes!
+            </div>
         </form>
     </div>
 
@@ -289,6 +313,7 @@
         }
 
         function submitToForm() {
+            // Note: Ensure 'File Upload' is deleted from Google Form for this to work without login.
             const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLScR8wTiALevIGCqyOovQCoYVC5Hi309DoC5sg3F3nitNMVZUw/viewform?usp=pp_url&entry.828186722=NAME_HOLDER&entry.1629981459=SQUARES_HOLDER";
             
             // 1. Get Winning Squares
