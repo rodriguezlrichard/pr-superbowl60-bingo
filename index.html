@@ -60,21 +60,28 @@
             border: none; border-radius: 5px;
         }
         
-        /* WIN BANNER */
+        /* POPUP BACKDROP (Dims the background) */
+        #modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); /* Dark semi-transparent background */
+            z-index: 99;
+        }
+
+        /* WIN BANNER (Centered Modal) */
         #win-banner {
             display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%); /* Perfectly centered */
+            width: 90%;
+            max-width: 400px;
             background-color: #003366; 
             color: white;
-            padding: 25px 20px;
-            position: fixed;
-            /* Move it to the bottom so it doesn't cover the board for the screenshot */
-            bottom: 20px; 
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 450px;
+            padding: 30px 20px;
             border-radius: 15px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             z-index: 100;
             text-align: center;
         }
@@ -104,13 +111,15 @@
         <small style="color:#999; cursor:pointer;" id="reset-btn">[Reset/New Player]</small>
     </div>
 
+    <div id="modal-overlay"></div>
+
     <div id="win-banner">
         <h2>🎉 BINGO! 🎉</h2>
-        <p style="color: #ddd; font-size: 16px; margin-bottom: 20px;">
-            1. Take a screenshot of your board.<br>
-            2. Click below to upload it!
+        <p style="color: #ddd; font-size: 16px; margin-bottom: 25px; line-height: 1.4;">
+            Click below to officially submit your winning board to Richard!<br><br>
+            <span style="font-size:12px; color:#aaa;">(You can take a screenshot for your own records)</span>
         </p>
-        <button class="btn" style="background: white; color: #003366; font-weight:bold; padding: 15px 35px; font-size: 18px; margin-top: 0;" id="claim-btn">Submit Proof</button>
+        <button class="btn" style="background: white; color: #003366; font-weight:bold; padding: 15px 35px; font-size: 18px; margin-top: 0;" id="claim-btn">Submit Victory</button>
         <br><br>
         <button id="close-win-btn" style="background:none; border:none; color:#ccc; text-decoration:underline; cursor:pointer;">Close</button>
     </div>
@@ -144,6 +153,8 @@
             "Fumble",
             "Drake Maye Passing Touchdown",
             "Sam Darnold Passing Touchdown",
+            "Jaxon Smith-Njigba Touchdown",
+            "Rhamondre Stevenson Toughdown",
             "Field Goal over 50 yards",
             "Pass Interference Penalty",
             "False Start Penalty",
@@ -177,9 +188,7 @@
             document.getElementById('bingo-btn').addEventListener('click', checkBingoManually);
             document.getElementById('reset-btn').addEventListener('click', resetGame);
             document.getElementById('claim-btn').addEventListener('click', submitToForm);
-            document.getElementById('close-win-btn').addEventListener('click', function() {
-                document.getElementById('win-banner').style.display='none';
-            });
+            document.getElementById('close-win-btn').addEventListener('click', closeBanner);
 
             const savedState = localStorage.getItem('pr_bingo_state_2026');
             if (savedState) {
@@ -253,11 +262,18 @@
         }
 
         function checkBingoManually() {
+            document.getElementById('modal-overlay').style.display = 'block';
             document.getElementById('win-banner').style.display = 'block';
         }
 
+        function closeBanner() {
+            document.getElementById('modal-overlay').style.display = 'none';
+            document.getElementById('win-banner').style.display = 'none';
+        }
+
         function submitToForm() {
-            // Updated to open the Form in a new tab where they can upload their file
+            // Note: This link is the same as before. 
+            // AS LONG AS you deleted the 'File Upload' question from the Google Form, this will work without login!
             const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLScR8wTiALevIGCqyOovQCoYVC5Hi309DoC5sg3F3nitNMVZUw/viewform?usp=pp_url&entry.828186722=NAME_HOLDER&entry.1629981459=SQUARES_HOLDER";
             const winningSquares = gameState.board.filter((_, i) => gameState.marked[i]).join(", ");
             const safeName = encodeURIComponent(gameState.name);
