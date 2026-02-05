@@ -6,17 +6,14 @@
     <style>
         body { font-family: 'Arial', sans-serif; text-align: center; background-color: #f0f0f0; padding: 20px; }
         
-        /* LOGO STYLING */
         .logo { max-width: 250px; height: auto; margin-bottom: 10px; }
         
         h1 { color: #003366; margin: 5px 0; font-size: 24px; }
         p { margin-top: 0; color: #555; }
         
-        /* LOGIN SCREEN */
         #login-screen { display: block; margin-top: 50px; }
         input[type="text"] { padding: 10px; font-size: 16px; width: 80%; max-width: 300px; border-radius: 5px; border: 1px solid #ccc; }
         
-        /* BINGO BOARD */
         #game-screen { display: none; }
         .bingo-card {
             display: grid;
@@ -48,14 +45,12 @@
         .square.active { background-color: #ffcc00; color: #333; }
         .free-space { background-color: #eee; color: #555; }
         
-        /* BUTTONS */
         .btn {
             margin-top: 20px; padding: 12px 24px; font-size: 16px; 
             cursor: pointer; background-color: #003366; color: white; 
             border: none; border-radius: 5px;
         }
         
-        /* WIN BANNER */
         #win-banner {
             display: none;
             background-color: #28a745;
@@ -81,3 +76,165 @@
             <br><br>
             <button class="btn" type="submit">Start Game</button>
         </form>
+    </div>
+
+    <div id="game-screen">
+        <h1>Welcome, <span id="display-name"></span>!</h1>
+        <p>Tap squares to mark them.</p>
+        <div class="bingo-card" id="card"></div>
+        <button class="btn" onclick="checkBingoManually()">I Have Bingo!</button>
+        <br><br>
+        <small style="color:#999; cursor:pointer;" onclick="resetGame()">[Reset/New Player]</small>
+    </div>
+
+    <div id="win-banner">
+        <h2>🎉 BINGO! 🎉</h2>
+        <p>Click below to submit your winning board!</p>
+        <button class="btn" style="background: white; color: #28a745; font-weight:bold;" onclick="submitToForm()">Claim Victory</button>
+        <br><br>
+        <button onclick="document.getElementById('win-banner').style.display='none'" style="background:none; border:none; color:white; text-decoration:underline; cursor:pointer;">Close</button>
+    </div>
+
+    <script>
+        // --- SANITIZED DATA ---
+        // I have manually cleaned this list to remove any hidden characters.
+        const options = [
+            "Coin Toss: Heads",
+            "Coin Toss: Tails",
+            "National Anthem over 2 mins",
+            "Coach throws headset",
+            "Review/Challenge Flag",
+            "Missed Field Goal",
+            "Interception",
+            "Sack",
+            "Touchdown Dance Celebration",
+            "Fan with Face Paint Shown",
+            "Cardi B is Mentioned or Shown",
+            "Anne Michael Maye Mentioned or Shown",
+            "Commercial: FanDuel",
+            "Commercial: Coors",
+            "Commercial: Tax Software",
+            "Movie Trailer",
+            "Sydney Sweeney Cameo in Ad",
+            "Halftime: Costume Change",
+            "Halftime: Guest Star",
+            "Announcers mention 'Patriots Dynasty'",
+            "Failed Challenge",
+            "Fumble",
+            "Drake Maye Passing Touchdown",
+            "Sam Darnold Passing Touchdown",
+            "Field Goal over 50 yards",
+            "Pass Interference Penalty",
+            "False Start Penalty",
+            "Owner shown in luxury box",
+            "Mascot shown",
+            "Safety",
+            "2-Point Conversion",
+            "Holding Penalty",
+            "Commercial: Some AI tool is Advertised",
+            "Commercial: Ben Affleck does a Boston Accent",
+            "Shane Gillis in a Commercial",
+            "Roger Goodell gets Booed"
+        ];
+
+        let gameState = {
+            name: "",
+            board: [],
+            marked: [] 
+        };
+
+        window.onload = function() {
+            console.log("Bingo System: Loaded");
+            const savedState = localStorage.getItem('pr_bingo_state_2026');
+            if (savedState) {
+                try {
+                    gameState = JSON.parse(savedState);
+                    showGame();
+                } catch(e) {
+                    console.log("Error loading state", e);
+                    localStorage.removeItem('pr_bingo_state_2026');
+                }
+            }
+        };
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startGame() {
+            console.log("Start Game Clicked");
+            const nameInput = document.getElementById('username').value.trim();
+            if (!nameInput) { alert("Please enter your name."); return; }
+
+            gameState.name = nameInput;
+            gameState.board = shuffle([...options]).slice(0, 24);
+            gameState.board.splice(12, 0, "FREE SPACE"); 
+            gameState.marked = new Array(25).fill(false);
+            gameState.marked[12] = true; 
+
+            saveState();
+            showGame();
+        }
+
+        function showGame() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            document.getElementById('display-name').innerText = gameState.name;
+            renderBoard();
+        }
+
+        function renderBoard() {
+            const card = document.getElementById('card');
+            card.innerHTML = "";
+            gameState.board.forEach((text, index) => {
+                const div = document.createElement('div');
+                div.className = 'square';
+                if (gameState.marked[index]) div.classList.add('active');
+                if (index === 12) div.classList.add('free-space');
+                div.innerText = text;
+                div.onclick = () => toggleSquare(index);
+                card.appendChild(div);
+            });
+        }
+
+        function toggleSquare(index) {
+            if (index === 12) return; 
+            gameState.marked[index] = !gameState.marked[index];
+            saveState();
+            renderBoard();
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem('pr_bingo_state_2026', JSON.stringify(gameState));
+            } catch (e) {
+                console.log("Could not save state");
+            }
+        }
+
+        function resetGame() {
+            if(confirm("Are you sure? This will delete your current board.")) {
+                localStorage.removeItem('pr_bingo_state_2026');
+                location.reload();
+            }
+        }
+
+        function checkBingoManually() {
+            document.getElementById('win-banner').style.display = 'block';
+        }
+
+        function submitToForm() {
+            const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLScR8wTiALevIGCqyOovQCoYVC5Hi309DoC5sg3F3nitNMVZUw/viewform?usp=pp_url&entry.828186722=NAME_HOLDER&entry.1629981459=SQUARES_HOLDER";
+            const winningSquares = gameState.board.filter((_, i) => gameState.marked[i]).join(", ");
+            const safeName = encodeURIComponent(gameState.name);
+            const safeSquares = encodeURIComponent(winningSquares);
+            const finalUrl = formUrl.replace("NAME_HOLDER", safeName).replace("SQUARES_HOLDER", safeSquares);
+            window.open(finalUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
