@@ -5,50 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         body { font-family: 'Arial', sans-serif; text-align: center; background-color: #f0f0f0; padding: 20px; }
+        
         .logo { max-width: 250px; height: auto; margin-bottom: 10px; }
         h1 { color: #003366; margin: 5px 0; font-size: 24px; }
         p { margin-top: 0; color: #555; }
         
+        /* LOGIN SCREEN */
         #login-screen { display: block; margin-top: 50px; }
         input[type="text"] { padding: 10px; font-size: 16px; width: 80%; max-width: 300px; border-radius: 5px; border: 1px solid #ccc; }
         
+        /* BINGO BOARD - FIXED CSS */
         #game-screen { display: none; }
         .bingo-card {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 4px;
-            max-width: 600px;
-            margin: 10px auto;
-            background: #333;
-            padding: 5px;
-            border-radius: 10px;
+            grid-template-columns: repeat(5, 1fr); /* Force 5 equal columns */
+            gap: 5px;
+            
+            /* UPDATED WIDTH SETTINGS */
+            width: 95%; 
+            max-width: 800px; /* Gave it more room to breathe */
+            margin: 20px auto;
+            
+            background: #222;
+            padding: 8px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); /* Added nice shadow for depth */
         }
+
         .square {
             background: white;
-            padding: 4px;
+            aspect-ratio: 1/1; /* Keeps them square */
             display: flex;
             align-items: center;
             justify-content: center;
-            aspect-ratio: 1/1;
-            font-size: 10px; 
+            padding: 4px;
+            
+            /* DYNAMIC FONT SIZE MAGIC */
+            /* This shrinks text on phones and grows it on desktop automatically */
+            font-size: clamp(9px, 1.5vw, 15px); 
+            
             font-weight: bold;
             cursor: pointer;
             user-select: none;
             text-align: center;
-            line-height: 1.1;
-            overflow-wrap: break-word; 
+            line-height: 1.2;
+            
+            /* THE CRITICAL FIXES FOR ALIGNMENT */
+            min-width: 0; /* Prevents long text from blowing out the grid */
+            word-wrap: break-word; /* Forces text to wrap */
+            overflow: hidden; /* Hides anything that still refuses to fit */
+            border-radius: 4px;
         }
-        @media (min-width: 600px) { .square { font-size: 13px; padding: 8px; } }
         
         .square.active { background-color: #ffcc00; color: #333; }
         .free-space { background-color: #eee; color: #555; }
         
+        /* BUTTONS */
         .btn {
             margin-top: 20px; padding: 12px 24px; font-size: 16px; 
             cursor: pointer; background-color: #003366; color: white; 
             border: none; border-radius: 5px;
         }
         
+        /* WIN BANNER */
         #win-banner {
             display: none;
             background-color: #28a745;
@@ -138,7 +157,7 @@
 
         // --- BINDING EVENTS ---
         document.addEventListener('DOMContentLoaded', () => {
-            alert("System Online: Code Loaded Successfully"); // DIAGNOSTIC POPUP
+            // I removed the "System Online" alert since we know the script loads now!
 
             // Bind Login Button
             const loginForm = document.getElementById('login-form');
