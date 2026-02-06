@@ -30,18 +30,18 @@
             width: 80%; 
             border-radius: 5px; 
             border: 1px solid #ccc; 
-            margin-bottom: 15px; /* Added space below input */
+            margin-bottom: 15px; 
         }
         
-        /* PRIZE TEXT - MOVED TO TOP */
+        /* PRIZE TEXT */
         .prize-alert {
             color: #003366;
             font-weight: bold;
             font-size: 16px;
-            margin-bottom: 25px; /* Space below prize box */
+            margin-bottom: 25px; 
             padding: 12px;
             background-color: #e6f0ff;
-            display: block; /* Takes full width of container */
+            display: block; 
             border-radius: 8px;
             border: 1px solid #b3d1ff;
         }
@@ -63,12 +63,12 @@
         .bingo-card {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 5px;
-            width: 95%; 
+            gap: 4px; /* Reduced gap slightly */
+            width: 98%; /* Use almost full width on mobile */
             max-width: 800px;
             margin: 20px auto;
             background: #222;
-            padding: 8px;
+            padding: 5px;
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
@@ -79,13 +79,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 4px;
-            font-size: clamp(9px, 1.5vw, 15px); 
+            
+            /* --- UPDATED TEXT FITTING --- */
+            padding: 2px; /* TIGHTER PADDING */
+            font-size: clamp(7px, 2.5vw, 15px); /* ALLOWS SMALLER FONT ON MOBILE */
+            line-height: 1.05; /* TIGHTER SPACING BETWEEN LINES */
+            /* ---------------------------- */
+            
             font-weight: bold;
             cursor: pointer;
             user-select: none;
             text-align: center;
-            line-height: 1.2;
             min-width: 0;
             word-wrap: break-word;
             overflow: hidden;
@@ -141,7 +145,7 @@
             <h1>Super Bowl LX Bingo</h1>
             
             <div class="prize-alert">
-                🏆 The first two winners will get to pick a <br>Roundtable Swag item from our store!
+                🏆 The first 2 winners get<br>Jaapi Store Credit!
             </div>
 
             <p>Enter your name to generate your official board.</p>
@@ -195,7 +199,6 @@
             "Emotional Big Pharma Ad",
             "Cardi B is Mentioned or Shown",
             "Anne Michael Maye Mentioned or Shown",
-            "Green Day says something political",
             "FanDuel Commercial",
             "Coors Commercial",
             "Turbotax Commercial",
@@ -203,18 +206,16 @@
             "Sydney Sweeney Cameo in Ad",
             "Halftime: Costume Change",
             "Halftime: Guest Star",
-            "Fans Waving Puerto Rican Flags",
             "Announcers mention 'Patriots Dynasty'",
             "Failed Challenge",
             "Fumble",
             "Drake Maye Passing Touchdown",
             "Sam Darnold Passing Touchdown",
-            "Jaxson Smith-Njigba Touchdown",
             "Field Goal over 50 yards",
             "Pass Interference Penalty",
             "False Start Penalty",
             "Owner shown in luxury box",
-            "A Team mascot is shown",
+            "Mascot shown",
             "The Seahawks Interception on the One yard line is mentioned",
             "2-Point Conversion",
             "Holding Penalty",
@@ -348,5 +349,3 @@
     </script>
 </body>
 </html>
-
-
