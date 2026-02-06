@@ -63,8 +63,8 @@
         .bingo-card {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 4px; /* Reduced gap slightly */
-            width: 98%; /* Use almost full width on mobile */
+            gap: 4px; /* Reduces gap  */
+            width: 98%; /* Uses almost full width on mobile */
             max-width: 800px;
             margin: 20px auto;
             background: #222;
@@ -183,7 +183,7 @@
     </div>
 
     <script>
-        // --- DATA SECTION ---
+        // --- CHOICES POOL ---
         const options = [
             "Coin Toss: Heads",
             "Coin Toss: Tails",
@@ -330,13 +330,13 @@
         }
 
         function submitToForm() {
-            // Note: Ensure 'File Upload' is deleted from Google Form for this to work without login.
+            // Note: change the forms doc here if and make sure to ellipses and then get fields
             const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLScR8wTiALevIGCqyOovQCoYVC5Hi309DoC5sg3F3nitNMVZUw/viewform?usp=pp_url&entry.828186722=NAME_HOLDER&entry.1629981459=SQUARES_HOLDER";
             
-            // 1. Get Winning Squares
+            // Get Winning Squares
             const winningSquares = gameState.board.filter((_, i) => gameState.marked[i]).join(", ");
             
-            // 2. Add Timestamp to the squares list for Tie-Breaking
+            // Add Timestamp to the squares list for Tie-Breaking
             const timestamp = new Date().toLocaleTimeString();
             const finalSquaresData = `[WIN TIME: ${timestamp}] - ${winningSquares}`;
 
@@ -349,3 +349,4 @@
     </script>
 </body>
 </html>
+
